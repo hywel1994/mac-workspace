@@ -1,0 +1,12 @@
+case 1:
+GGG
+CCC
+JJJ
+case 2:
+CODE
+CODE
+CODE
+JJAM
+case 3:
+CA
+KE
