@@ -2,6 +2,10 @@ import fileinput
 import numpy as np
 import math
 
+import sys
+ 
+sys.setrecursionlimit(1000000)
+
 f = fileinput.input()
 def input():
     return f.readline()
@@ -54,62 +58,64 @@ for case in range(1, T+1):
     # print ("X",X)
     # print ("Y",Y)
     # print ("Z",Z)
-    # print ("L",L)
-    # print ("R",R)
-    # print ("K",K)
+    #print ("L",L)
+    #print ("R",R)
+    #print ("K",K)
 
-    # S = 0
-    # for i in range(Q):
-    #     L_tmp = L.copy()
-    #     R_tmp = R.copy()
-    #     for j in range(K[i]):
-    #         if (len(L_tmp)>0):
-    #             #print ("max",L_tmp,R_tmp)
-    #             num = R_tmp.index(max(R_tmp))
-    #             score = R_tmp[num]
-    #             R_tmp[num] = R_tmp[num]-1
-    #             L_tmp,R_tmp = DelS(L_tmp,R_tmp)
-    #             #print (L_tmp,R_tmp)
-    #             #print (score)
-    #         else:
-    #             score = 0
-    #     S += score*(i+1)
-    #print (S)
-    
-    maxScore = max(R)
-    minScore = min(L)
+    #S = 0
+    # for i in range(len(K)):
+        # L_tmp = [j for j in L]
+        # R_tmp = [j for j in R]
+        # K_tmp = K[i]
+        # def function(L_tmp,R_tmp,K_tmp):
+        #     if (not R_tmp):
+        #         return 0
+        #     if K_tmp == 1:
+        #         return max(R_tmp)
+        #     else:
+        #         R_index = R_tmp.index(max(R_tmp))
+        #         if (R_tmp[R_index]-L_tmp[R_index]+1)>int(K_tmp/2):
+        #             R_tmp[R_index] -= int(K_tmp/2)
+        #             return function(L_tmp,R_tmp,K_tmp-int(K_tmp/2))
+        #         else:
+        #             len_tmp = R_tmp[R_index]-L_tmp[R_index]+1
+        #             R_tmp.pop(R_index)
+        #             L_tmp.pop(R_index)
+        #             return function(L_tmp,R_tmp,K_tmp-len_tmp)
 
-    scoreNum = [0]*(maxScore-minScore+1)
-    #listK = []
-    
-    for i in range(len(L)):
+        # S += function(L_tmp,R_tmp,K_tmp)*(i+1)
+
+    def find_x(x):
+        sum_data = 0
+        for i in range(len(R)):
+            big = R[i]
+            small = L[i]
+            if x>big:
+                sum_data += 0
+            elif x>small:
+                sum_data += big-x+1
+            else:
+                sum_data += big-small+1
+        return sum_data
+
+    S = 0
+    max_score = max(R)
+    min_score = min(L)
+    for i in range(len(K)):
+        right = max_score
+        left = min_score
+        mid = int(max_score+min_score)/2
+        while (right>left+1):
+            tmp = find_x(mid)
+            #print ('find_x',tmp,'mid',mid,'left',left,'right',right)
+            if tmp >= K[i]:
+                left = mid
+                mid = int((right+left)/2)
+            else:
+                right = mid
+                mid = int((right+left)/2)
+        if find_x(left) >= K[i]:
+            S += left*(i+1)
+
         
-        lenTmp = R[i]-L[i]+1
-        start = L[i]-minScore
-        #print (start)
-        for j in range(lenTmp):
-            #print (scoreNum)
-            #print (j)
-            scoreNum[start+j] += 1
-            
-    #print (scoreNum)
-
-    for i in range(Q):
-        #print (K[i],len(scoreNum),maxScore)
-        sum = 0
-        numMa = len(scoreNum)
-        k = 1
-        while 1:
-            if sum >= K[i]:
-                break
-            if k > numMa:
-                S = 0
-                break
-            S = maxScore+1-k
-            sum += scoreNum[numMa-k]
-            k += 1
-        
-
-        
-
     print ("Case #{}: {}".format(case, S))
